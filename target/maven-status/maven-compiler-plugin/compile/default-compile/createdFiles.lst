@@ -1,0 +1,13 @@
+service\impl\AuthorServiceImpl.class
+model\entity\Book.class
+repository\AuthorRepository.class
+model\entity\Author.class
+BookstoreApplication.class
+repository\BookRepository.class
+service\BookService.class
+service\impl\BookServiceImpl.class
+service\AuthorService.class
+config\SecurityConfig.class
+model\enumeration\Category.class
+controller\BookController.class
+util\ResourceNotFoundException.class
