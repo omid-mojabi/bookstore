@@ -46,49 +46,49 @@ The application will be running on http://localhost:8080.
 
 Here is the ER Diagram of Bookstore API elements:
 ```mermaid
+## Entity Relationship Diagram (ERD)
 
-Shopping_Cart_Item: Shopping_Cart_Id Cart_Item_Id
-
+```mermaid
 erDiagram
-    BOOK {
-        Long Id
-        String Title
-        String Category
-        BigDecimal Price
-        Integer Stock
-        []byte Cover_Image
-    }
+  BOOK {
+    Long Id
+    String Title
+    String Category
+    BigDecimal Price
+    Integer Stock
+    byte[] Cover_Image
+  }
 
-    AUTHOR {
-        Long Id
-        string Name
-    }
-    
-    BOOK_AUTHOR {
-        Long Book_Id 
-        Long Author_Id
-    }
+  AUTHOR {
+    Long Id
+    String Name
+  }
 
-    CART_ITEM {
-        Long Id
-        date Date_Time
-        int Quantity
-        Long Book_Id
-    }
-    
-    SHOPPING_CART {
-        Long Id
-        date Date_Time
-        BigDecimal Sum
-    }
-    
-    SHOPPING_CART_ITEM {
-        Long Shopping_Cart_Id
-        Long Cart_Item_Id
-    }
+  BOOK_AUTHOR {
+    Long Book_Id
+    Long Author_Id
+  }
 
-    BOOK ||--o{ BOOK_ASHOPPING_CART_ITEMUTHOR : places
-    AUTHOR ||--o{ BOOK_AUTHOR : places
-    BOOK ||--o{ CART_ITEM : contains
-    SHOPPING_CART ||--o{ SHOPPING_CART_ITEM : contains
-    CART_ITEM ||--o{ SHOPPING_CART_ITEM : contains
+  CART_ITEM {
+    Long Id
+    Date Date_Time
+    Integer Quantity
+    Long Book_Id
+  }
+
+  SHOPPING_CART {
+    Long Id
+    Date Date_Time
+    BigDecimal Sum
+  }
+
+  SHOPPING_CART_ITEM {
+    Long Shopping_Cart_Id
+    Long Cart_Item_Id
+  }
+
+  BOOK ||--o{ BOOK_AUTHOR : "has"
+  AUTHOR ||--o{ BOOK_AUTHOR : "written_by"
+  BOOK ||--o{ CART_ITEM : "contains"
+  SHOPPING_CART ||--o{ SHOPPING_CART_ITEM : "includes"
+  CART_ITEM ||--o{ SHOPPING_CART_ITEM : "part_of"
