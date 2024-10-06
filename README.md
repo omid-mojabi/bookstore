@@ -44,7 +44,9 @@ This project is built using Java and Spring Boot, with Maven as a build tool. Th
 
 The application will be running on http://localhost:8080.
 
-Here is the ER Diagram of Bookstore API elements:
+Here is the **Swagger documentation** address: http://localhost:8080/swagger-ui/index.html#/
+
+and the ER Diagram of Bookstore API elements:
 ## Entity Relationship Diagram (ERD)
 
 ```mermaid
