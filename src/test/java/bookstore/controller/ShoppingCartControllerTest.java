@@ -7,17 +7,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class ShoppingCartControllerTest {
 
-    @Autowired
     MockMvc mockMvc;
 
     @Autowired
@@ -46,19 +48,51 @@ class ShoppingCartControllerTest {
               ]
             }
             """;
+    public static final String bodyForValidation = """
+            {
+              "items": [
+                {
+                  "book": {
+                    "title": "title",
+                    "author": [
+                      {
+                        "name": "name"
+                      }
+                    ],
+                    "price": 0,
+                    "stock": 0,
+                    "category": "ARTs",
+                    "coverImage": [
+                      0
+                    ]
+                 }
+                }
+              ]
+            }
+            """;
 
     @BeforeEach
     void setUp() {
         this.mockMvc = MockMvcBuilders.standaloneSetup(new ShoppingCartController(shoppingCartService))
-                .setControllerAdvice()
+                .setControllerAdvice(new ControllerAdvice())
                 .build();
     }
-
     @Test
     void testPurchase() throws Exception {
         mockMvc.perform(post("/v1/shoppingcart/purchase")
                         .content(body)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(201));
+    }
+
+    @Test
+    void testPurchaseValidation() throws Exception {
+
+        mockMvc.perform(post("/v1/shoppingcart/purchase")
+                        .content(bodyForValidation)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.price").value("price should be greater than zero"));
+
     }
 }
