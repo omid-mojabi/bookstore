@@ -1,6 +1,8 @@
 package bookstore.controller;
 
 import bookstore.dto.BookDto;
+import bookstore.exception.ResourceNotFoundException;
+import bookstore.model.entity.Book;
 import bookstore.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,5 +34,15 @@ public class BookController {
         book.setCoverImage(multipartFile.getBytes());
         return ResponseEntity.status(HttpStatus.CREATED).body(mapper().toBookDto(bookService.saveBook(mapper().fromBookDto(book))));
 
+    }
+
+    // Find a specific book by ID
+    @GetMapping("/{id}")
+    public ResponseEntity<BookDto> getBook(@PathVariable Long id) throws ResourceNotFoundException {
+        Book book = bookService.findBook(id);
+        if (book == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(mapper().toBookDto(book));
     }
 }

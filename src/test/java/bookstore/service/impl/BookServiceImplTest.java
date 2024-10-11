@@ -1,6 +1,7 @@
 package bookstore.service.impl;
 
 import bookstore.exception.ItemInsufficientException;
+import bookstore.exception.ResourceNotFoundException;
 import bookstore.model.entity.Book;
 import bookstore.repository.BookRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import javax.naming.InsufficientResourcesException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -93,6 +95,21 @@ class BookServiceImplTest {
         // Then
         verify(repository, never()).save(any(Book.class));
     }
+
+    // Test for finding a book by its ID when the book exists
+    @Test
+    void testFindBookByIdWhenBookExists() throws ResourceNotFoundException {
+        // Given
+        Book book = Book.builder().id(1L).title("A").build();
+        when(repository.findById(1L)).thenReturn(Optional.ofNullable(book));  // Directly returning a book
+
+        // When
+        Book foundBook = bookService.findBook(1L);
+
+        // Then
+        assertThat(foundBook).isEqualTo(book);
+    }
+
 
     @Test
     void testReleaseQuantity() {

@@ -12,13 +12,13 @@ public class TestHelper {
     public static Book createBook() {
         return Book.builder()
                 .id(1L)
-                .price(BigDecimal.valueOf(20))
-                .title("A BOOK")
+                .price(BigDecimal.valueOf(34))
+                .title("The Professional Scrum Team")
                 .author(Set.of(Author.builder()
-                        .name("Tom Clark's")
+                        .name("Peter Gotz")
                         .id(2L).build()))
-                .stock(20)
-                .category(Category.ARTs)
+                .stock(15)
+                .category(Category.TECHNOLOGY)
                 .coverImage(null)
                 .build();
     }

@@ -14,10 +14,10 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Optional;
 
 import static bookstore.util.TestHelper.createBook;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -38,15 +38,15 @@ class BookControllerTest {
     private static final String bodyString=
             """
                 {
-                  "title": "A BOOK",
+                  "title": "A Book",
                   "author": [
                     {
-                      "name": "Tom Clark's"
+                      "name": "Peter Gotz"
                     }
                   ],
-                  "price": 20.00,
-                  "stock": 20,
-                  "category": "ARTs",
+                  "price": 34.00,
+                  "stock": 15,
+                  "category": "TECHNOLOGY",
                   "coverImage": [
                     0
                   ]
@@ -59,10 +59,10 @@ class BookControllerTest {
         when(bookService.listBooks(anyString())).thenReturn(List.of(createBook()));
         // When and Then
         this.mockMvc
-                .perform(get("/v1/books").param("filter", "A BOOK"))
+                .perform(get("/v1/books").param("filter", "The Professional Scrum Team"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(1))
-                .andExpect(jsonPath("$[0].title").value("A BOOK"));
+                .andExpect(jsonPath("$[0].title").value("The Professional Scrum Team"));
     }
 
     @Test
@@ -78,6 +78,19 @@ class BookControllerTest {
                         .part(body)
                         .contentType("multipart/form-data"))
                 .andExpect(status().is(201));
+    }
+
+    @Test
+    void getBook() throws Exception {
+        // Given
+        Book mockBook = createBook();
+        when(bookService.findBook(anyLong())).thenReturn(mockBook);
+
+        // When & Then
+        this.mockMvc.perform(get("/v1/books/{id}", 1L))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value(mockBook.getTitle()))
+                .andExpect(jsonPath("$.price").value(mockBook.getPrice()));
     }
 
 }
